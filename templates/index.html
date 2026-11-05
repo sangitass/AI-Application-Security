@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Security Chatbot</title>
+ 
+    <style>
+        body {
+            font-family: Arial;
+            background: #eee;
+            padding: 30px;
+        }
+ 
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+ 
+        h2 {
+            text-align: center;
+        }
+ 
+        #chat {
+            height: 350px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+ 
+        input {
+            width: 75%;
+            padding: 10px;
+        }
+ 
+        button {
+            padding: 10px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+ 
+        .user {
+            color: blue;
+            margin: 12px 0;
+        }
+ 
+        .bot {
+            color: green;
+            margin: 12px 0;
+        }
+    </style>
+</head>
+ 
+<body>
+ 
+<div class="container">
+ 
+    <h2>AI Security Capstone Chatbot</h2>
+    <p>Vulnerable-by-Design AI Application</p>
+ 
+    <div id="chat"></div>
+ 
+    <input id="message" placeholder="Enter your message">
+    <button onclick="sendMessage()">Send</button>
+ 
+</div>
+ 
+<script>
+async function sendMessage() {
+ 
+    let input = document.getElementById("message");
+    let chat = document.getElementById("chat");
+    let msg = input.value.trim();
+ 
+    if (!msg) return;
+ 
+    chat.innerHTML += '<p class="user">You: ' + msg + '</p>';
+    input.value = "";
+ 
+    try {
+        let res = await fetch("/chat", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({message: msg})
+        });
+ 
+        let data = await res.json();
+ 
+        let reply = data.response || data.error || "No response";
+ 
+        let bot = document.createElement("p");
+        bot.className = "bot";
+ 
+        // Intentionally unsafe rendering for authorised LLM02 testing
+        bot.innerHTML = "AI: " + reply;
+ 
+        chat.appendChild(bot);
+ 
+    } catch (error) {
+        chat.innerHTML +=
+            '<p class="bot">Connection error</p>';
+    }
+ 
+    chat.scrollTop = chat.scrollHeight;
+}
+</script>
+ 
+</body>
+</html>
